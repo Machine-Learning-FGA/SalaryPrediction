@@ -23,7 +23,7 @@ columns_to_vectorize = {
     'LocationNormalized':10
 }
 
-NUMBER_OF_ROWS = 100000
+NUMBER_OF_ROWS = 100
 
 new_file = open("Vectorized.csv","w")
 writer = csv.writer(new_file, delimiter=',')
@@ -34,8 +34,14 @@ with zipfile.ZipFile('Train_rev1.zip') as myzip:
 
 definite_row = []
 
-for i in range(0, NUMBER_OF_ROWS):
+for i in range(0, NUMBER_OF_ROWS + 1):
     definite_row.append([])
+
+for i in range(0, 226):
+    definite_row[0].append(i)
+
+definite_row[0].append('Salary')
+writer.writerow(definite_row[0])
 
 for key in columns_to_vectorize:
     count_vectorizer = CountVectorizer(max_features=columns_to_vectorize[key], stop_words='english')
@@ -44,8 +50,8 @@ for key in columns_to_vectorize:
         value = value.tolist()
         definite_row[index].extend(value)
 
-for i in range(0, NUMBER_OF_ROWS):
-    definite_row[i].extend([str(df['SalaryNormalized'][i])])
-    writer.writerow(definite_row[i])
+for i in range(0, NUMBER_OF_ROWS-1):
+    definite_row[i + 1].extend([str(df['SalaryNormalized'][i])])
+    writer.writerow(definite_row[i + 1])
 
 new_file.close()
