@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import explained_variance_score
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import r2_score
 from sklearn import linear_model
 import seaborn as sns
@@ -19,36 +18,8 @@ import zipfile
 
 with zipfile.ZipFile('Train_rev1.zip') as myzip:
     with myzip.open('Train_rev1.csv') as myfile:
-        df = pd.read_csv(myfile, nrows=10)
+        df = pd.read_csv(myfile)
 
-
-#verifica ocorrências de determinado valor nas colunas desejadas
-
-# print(df['ContractType'].value_counts(),'\n')
-# print(df['ContractTime'].value_counts(),'\n')
-
-
-#TfidfVectorizer
-
-vectorize = TfidfVectorizer()
-
-x_title = vectorize.fit_transform(df['Title'])
-print('title\n', x_title.toarray())
-
-x_description = vectorize.fit_transform(df['FullDescription'])
-print('description\n', x_description.toarray())
-
-x_loc_raw = vectorize.fit_transform(df['LocationRaw'])
-print('loc raw\n', x_loc_raw.toarray())
-
-x_loc_raw = vectorize.fit_transform(df['LocationNormalized'])
-print('loc normalized\n', x_description.toarray())
-
-
-#Transforma colunas ContractType e ContractTime em int, pois possuem apenas dois valores
-#deu errado
-# df['ContractType'].replace([0,1],['part_time','full_time'],inplace=True)
-# df['ContractTime'].replace([0,1],['permanent','contract'],inplace=True)
 
 
 #drop na coluna salary raw
@@ -63,13 +34,13 @@ for column in df:
 
 
 #matriz de correlação
-# correlation = df.corr()
-# plt.figure(figsize=(10,10))
-# g = sns.heatmap(correlation, vmax=1, square=True,annot=True,cmap='RdYlGn',xticklabels=True,yticklabels=True, annot_kws={"size":7})
-# g.set_yticklabels(g.get_yticklabels(), rotation =0)
-# g.set_xticklabels(g.get_yticklabels(), size=7, rotation =90)
-# plt.title('Correlation between different features')
-# sns.plt.show()
+correlation = df.corr()
+plt.figure(figsize=(10,10))
+g = sns.heatmap(correlation, vmax=1, square=True,annot=True,cmap='RdYlGn',xticklabels=True,yticklabels=True, annot_kws={"size":7})
+g.set_yticklabels(g.get_yticklabels(), rotation =0)
+g.set_xticklabels(g.get_yticklabels(), size=7, rotation =90)
+plt.title('Correlation between different features')
+sns.plt.show()
 
 
 X = df.drop('SalaryNormalized', axis=1).values
@@ -79,11 +50,12 @@ X_salary = X[:, 10]
 
 y = y.reshape(-1, 1)
 X_salary = X_salary.reshape(-1, 1)
+
 # scatter plot
-# plt.scatter(X_salary, y)
-# plt.ylabel('Salary')
-# plt.xlabel('Number of salarys')
-# plt.show()
+plt.scatter(X_salary, y)
+plt.ylabel('Salary')
+plt.xlabel('Number of salarys')
+plt.show()
 
 #hist plot salário
 # df['SalaryNormalized_log'] = np.log(df['SalaryNormalized'])

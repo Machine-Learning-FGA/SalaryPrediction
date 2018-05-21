@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import linear_model
+from numpy import isnan
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score, median_absolute_error
 from sklearn.metrics import explained_variance_score
@@ -9,6 +10,9 @@ from sklearn.metrics import explained_variance_score
 df = pd.read_csv('Vectorized.csv')
 
 df['Salary'] = np.log(df['Salary'])
+for column in df:
+    df[column].fillna(0, inplace=True)
+
 X = df.drop('Salary', axis=1).values
 y = df['Salary'].values
 
